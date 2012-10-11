@@ -1,4 +1,9 @@
 #################
+## sph data
+#################
+*.dat
+
+#################
 ## Eclipse
 #################
 
@@ -42,6 +47,9 @@ local.properties
 *.sln.docstates
 
 # Build results
+numP*/*
+SPH/x64/*
+x64/*
 [Dd]ebug/
 [Rr]elease/
 *_i.c
