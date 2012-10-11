@@ -18,7 +18,7 @@
 
 // SPH parameter
 //-------------------------------------------------------------
-#define DT 0.002f         // time step
+#define DT 0.001f         // time step
 #define M 1.0f            // mass of one particle
 #define RHO	1000.0f       // rest density  (kg/m^3)   water = 1000
 #define Z 0.000001f       // pressure scaling for negative pressure
