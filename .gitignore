@@ -1,12 +1,7 @@
 #################
-<<<<<<< HEAD
 ## sph sim data
 #################
 SPH/numP*/*
-=======
-## sph data
-#################
->>>>>>> origin/extract_data_locally
 *.dat
 
 #################
