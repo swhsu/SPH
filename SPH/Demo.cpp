@@ -120,17 +120,19 @@ void keyboard(unsigned char key, int x, int y)
 			break;
 		case 'e':
 			{
-			isExtractData ^= 1;
+				isExtractData ^= 1;
 
-			// create a folder for saving data
-			SYSTEMTIME* p_st = new SYSTEMTIME;
-			GetLocalTime(p_st);
-			char filename[128];
-			sprintf_s(filename, "numP_%d_(%d_%d)_(%d_%d)", NUM_PARTICLE, p_st->wHour, p_st->wMinute, p_st->wMonth, p_st->wDay);
-			dataExtractor->createFolder(filename);
-
-			cout << "Extract Data:" << isExtractData << endl;
-			break;
+				if(isExtractData)
+				{
+					// create a folder for saving data
+					SYSTEMTIME* p_st = new SYSTEMTIME;
+					GetLocalTime(p_st);
+					char filename[128];
+					sprintf_s(filename, "numP_%d_(%d_%d)_(%d_%d)", NUM_PARTICLE, p_st->wHour, p_st->wMinute, p_st->wMonth, p_st->wDay);
+					dataExtractor->createFolder(filename);
+				}
+				cout << "Extract Data:" << isExtractData << endl;
+				break;
 			}
 		case 'g':
 			sph->sphLoop();
@@ -249,8 +251,8 @@ void simLoop()
 
 	
 	if(isExtractData) {
-		dataExtractor->saveSnapShot();
-		dataExtractor->saveAvgGridVel(32,32);
+		dataExtractor->extract2D();
+		dataExtractor->extractGridVel2D(32,32);
 		dataExtractor->numSnapShot++;
 	}
 

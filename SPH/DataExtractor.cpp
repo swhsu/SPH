@@ -28,7 +28,8 @@ DataExtractor::~DataExtractor(void)
 void DataExtractor::createFolder(char* folderName)
 {
 	strcpy_s(folder, folderName);
-	if(CreateDirectory(folderName,NULL) == 0) {
+	if(CreateDirectory(folderName,NULL) == 0) 
+	{
 		cerr << "create folder error..." << endl;
 		exit(0);
 	}
@@ -36,28 +37,31 @@ void DataExtractor::createFolder(char* folderName)
 
 
 
-void DataExtractor::saveSnapShot()
+void DataExtractor::extract2D()
 {
-
 	char tmp1[256];
 	char tmp2[256];
 	char tmp3[256];
-
+	char tmp4[256];
 	
-	sprintf_s(tmp1, "./%s/%04d.dat\0", folder, numSnapShot);					// positions
+	sprintf_s(tmp1, "./%s/%04d.dat\0", folder, numSnapShot);				// positions
 	sprintf_s(tmp2, "./%s/force_%04d.dat\0", folder, numSnapShot);			// force
-	sprintf_s(tmp3, "./%s/vel_%04d.dat\0", folder, numSnapShot);				// vel
+	sprintf_s(tmp3, "./%s/vel_%04d.dat\0", folder, numSnapShot);			// vel
+	sprintf_s(tmp4, "./%s/neihbor_%04d.dat\0", folder, numSnapShot);		// neighbor info
 	ofstream file1(tmp1, ios::binary);
 	ofstream file2(tmp2, ios::binary);
 	ofstream file3(tmp3, ios::binary);
+	ofstream file4(tmp4, ios::binary);
 
-	if( !file1.is_open() || !file2.is_open() || !file3.is_open()) {
-		cerr << "export snap error..." << endl;
+	if( !file1.is_open() || !file2.is_open() || !file3.is_open() || !file4.is_open()) 
+	{
+		cerr << "extract2D data error..." << endl;
 		exit(0);
 	}
 	
-	for(int i=0; i<sphSystem->numParticle; i++) {
-		//file.write((char*)(sphSystem->p[i]), 3*sizeof(float));		// output (x,y,z)
+	file4.write((char*)(&sphSystem->numParticle), sizeof(int));
+	for(int i=0; i<sphSystem->numParticle; i++) 
+	{
 		file1.write((char*)&(sphSystem->p[i]->x), sizeof(float));		// output pos x
 		file1.write((char*)&(sphSystem->p[i]->y), sizeof(float));		// output pos y
 
@@ -66,16 +70,21 @@ void DataExtractor::saveSnapShot()
 
 		file3.write((char*)&(sphSystem->p[i]->v.x), sizeof(float));		// output vel x
 		file3.write((char*)&(sphSystem->p[i]->v.y), sizeof(float));		// output vel y
+
+		int nsize = sphSystem->p[i]->pq.getSize();
+		file4.write((char*)(&nsize), sizeof(int));
+		file4.write((char*)(&(sphSystem->p[i]->pq.queue[1])), nsize*sizeof(int));
 	}
 
 	file1.close();
 	file2.close();
 	file3.close();
+	file4.close();
 }
 
 
 
-void DataExtractor::saveAvgGridVel(int res1, int res2)
+void DataExtractor::extractGridVel2D(int res1, int res2)
 {
 	int numGrids = res1*res2;		// assume it's 1024
 	
@@ -90,7 +99,8 @@ void DataExtractor::saveAvgGridVel(int res1, int res2)
 
 	// 1. map force to grids
 
-	for(int i=0; i<sphSystem->numParticle; i++) {
+	for(int i=0; i<sphSystem->numParticle; i++) 
+	{
 		float x = sphSystem->p[i]->x;
 		float y = sphSystem->p[i]->y;
 
@@ -109,7 +119,8 @@ void DataExtractor::saveAvgGridVel(int res1, int res2)
 
 
 	// average
-	for(int i=0; i<2*numGrids; i++) {
+	for(int i=0; i<2*numGrids; i++) 
+	{
 		if(count[i/2] != 0)
 			v[i] /= count[i/2];
 	}
@@ -119,7 +130,8 @@ void DataExtractor::saveAvgGridVel(int res1, int res2)
 	sprintf_s(tmp, "./%s/avgGridVel_%04d.dat\0", folder, numSnapShot);
 	
 	ofstream file(tmp, ios::binary);
-	if( !file.is_open() || !file.is_open()) {
+	if( !file.is_open() || !file.is_open()) 
+	{
 		cerr << "export snap error..." << endl;
 		exit(0);
 	}
@@ -130,10 +142,12 @@ void DataExtractor::saveAvgGridVel(int res1, int res2)
 	char tmp2[256];
 	sprintf_s(tmp2, "./%s/numParticleInGrid_%04d.dat\0", folder, numSnapShot);
 	ofstream file2(tmp2, ios::binary);
-	if( !file2.is_open() || !file2.is_open()) {
+	if( !file2.is_open() || !file2.is_open()) 
+	{
 		cerr << "export snap error (part2)..." << endl;
 		exit(0);
 	}
+
 	file2.write((char*)count, sizeof(int)*numGrids);
 	file2.close();
 }

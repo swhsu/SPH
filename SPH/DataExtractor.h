@@ -15,9 +15,12 @@ class DataExtractor
 public:
 	DataExtractor(SPHSystem* sph);
 	~DataExtractor(void);
-	void saveSnapShot(void);
+	void extract2D(void);
+	void extractGridVel2D(int res1, int res2);
+
+	// [TODO]  extract3D()
+
 	void createFolder(char* folder);
-	void saveAvgGridVel(int res1, int res2);
 
 	int numSnapShot;
 	char folder[128];

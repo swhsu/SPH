@@ -1,7 +1,12 @@
 #################
+<<<<<<< HEAD
 ## sph sim data
 #################
 SPH/numP*/*
+=======
+## sph data
+#################
+>>>>>>> origin/extract_data_locally
 *.dat
 
 #################
@@ -48,6 +53,9 @@ local.properties
 *.sln.docstates
 
 # Build results
+numP*/*
+SPH/x64/*
+x64/*
 [Dd]ebug/
 [Rr]elease/
 *_i.c
