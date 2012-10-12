@@ -360,29 +360,38 @@ void SPHSystem::render()
 			//glVertex3f(p[i]->x+ 0.5*p[i]->v.x, p[i]->y+ 0.5*p[i]->v.y, p[i]->z+ 0.5*p[i]->v.z);
 		}
 		glEnd();
-
-		/*
-		// grids
-		glColor3f(0.2,0.8,0.2);
-		for(int i=0; i<64; i+=2) {
-			glBegin(GL_LINES);
-			glVertex3f((float)i/10.0, 0, 0);
-			glVertex3f((float)i/10.0, 6.4, 0);
-			glEnd();
-		}
-
-
-		glColor3f(0.2,0.8,0.2);
-		for(int i=0; i<64; i+=2) {
-			glBegin(GL_LINES);
-			glVertex3f(0,  (float)i/10.0,  0);
-			glVertex3f(6.4, (float)i/10.0, 0);
-			glEnd();
-		}
-		*/
-
-
 		glFlush();
+
+
+		// draw velocity/pressure of particle0's neighbors
+
+		float scale = 1e-2f;
+		int numSample = 10;
+		vector<int> selectedId;
+		for(int i=0; i<numSample; i++)
+		{
+			selectedId.push_back(i*191+19);
+		}
+
+		for(int i=0; i<numSample; i++)
+		{
+			int nsize = p[selectedId[i]]->pq.getSize();
+			for(int j=1; j<=nsize; j++)
+			{
+				int neigId = p[selectedId[i]]->pq.queue[j];
+				glPushMatrix();
+				glTranslatef(p[neigId]->x, p[neigId]->y, p[neigId]->z);
+				glBegin(GL_LINES);
+				glColor3f(0,1,0);
+				glVertex3f(0, 0, 0);
+				glVertex3f(p[neigId]->v.x, p[neigId]->v.y, p[neigId]->v.z);
+				glColor3f(1,0,0);
+				glVertex3f(0, 0, 0);
+				glVertex3f(scale*p[neigId]->a.x, scale*p[neigId]->a.y, scale*p[neigId]->a.z);
+				glEnd();
+				glPopMatrix();
+			}
+		}
 	}
 
 
